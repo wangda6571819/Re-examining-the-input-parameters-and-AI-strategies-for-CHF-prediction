@@ -3,6 +3,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import Ridge
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 import numpy as np
+from sklearn.preprocessing import StandardScaler
 
 # Load the data
 file_path = '../output/AIData_ALL_model_Transformer_110.csv'  # Replace with the actual path to your CSV file
@@ -19,6 +20,11 @@ target = 'CHF'
 X1_full = data[features_group_1]
 X2_full = data[features_group_2]
 y_full = data[target]
+
+# Normalize the features
+scaler = StandardScaler()
+X1_full = scaler.fit_transform(X1_full)
+X2_full = scaler.fit_transform(X2_full)
 
 # Split the data into training and testing sets (80% train, 20% test)
 X1_train_full, X1_test_full, y_train_full, y_test_full = train_test_split(X1_full, y_full, test_size=0.2, random_state=42)
@@ -195,8 +201,6 @@ df_slice12['Inlet Subcooling'] = slice11d
 df_slice12['Inlet Temperature'] = 202
 
 
-
-
 depend_items = {
 'slice01' : {'key' : 'Tube Diameter' , 'df' : df_slice01},
 'slice02' : {'key' : 'Tube Diameter' , 'df' : df_slice02},
@@ -223,11 +227,13 @@ for slice_name in slice_sheet_name :
     slice_parameter_name = depend_item["key"]
 
     pdData = depend_item['df']
-
-
     prData = pdData[features_group_2]
-    predictData = ridge_model.predict(prData)
+    print(prData)
+    prData = scaler.fit_transform(prData)
 
+
+    predictData = ridge_model.predict(prData)
+    print(predictData)
 
     fdf[f'501 AI Data'] = predictData
     fdf.to_csv(new_path_data, index=False)
