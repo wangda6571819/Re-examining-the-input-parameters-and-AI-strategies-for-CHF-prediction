@@ -245,7 +245,7 @@ def doTrain(feature_columns = ['Tube Diameter' ,'Heated Length', 'Enthalpy value
 
     # Model hyperparameters setup
     # 超参数的搜索范围
-    batch_size = 512
+    batch_size = 1024
     d_model = 64
     nhead = 32
     num_encoder_layers = 32
@@ -303,7 +303,7 @@ def getModel(feature_columns) :
 
     # Model hyperparameters setup
     # 超参数的搜索范围
-    batch_size = 512
+    batch_size = 1024
     d_model = 64
     nhead = 32
     num_encoder_layers = 32
@@ -326,7 +326,7 @@ def getModel(feature_columns) :
 if __name__ == "__main__":
     print("测试 tcn")
 
-    epochsCount = 1
+    epochsCount = 2000
 
     # 300 6-1
     # Tube Diameter, Heated Length, Enthalpy value of water, Enthalpy value of air , Mass Flux, Inlet Subcooling

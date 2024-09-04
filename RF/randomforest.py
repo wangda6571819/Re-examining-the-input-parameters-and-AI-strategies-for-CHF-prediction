@@ -1,200 +1,87 @@
 import pandas as pd
+from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
-from sklearn.model_selection import GroupKFold, KFold
-import optuna
-import torch
-import torch.nn as nn
-import torch.nn.functional as F
-from tqdm import tqdm
-from joblib import Parallel, delayed
-import random
+from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 import numpy as np
-import math
-import matplotlib.pyplot as plt
-import time
-from einops import rearrange
-import torch
-import joblib
 
+# Load the data
 
-# 文件抬头
-calIndex = 500
-
-model_name = 'randomforest'
-
-def set_seed(seed_value):
-    random.seed(seed_value)  # Python
-    np.random.seed(seed_value)  # NumPy
-    torch.manual_seed(seed_value)  # PyTorch CPU
-    torch.cuda.manual_seed_all(seed_value)
-    torch.backends.cudnn.deterministic = True
-    torch.backends.cudnn.benchmark = False
-
-set_seed(42)
-
-deviceString = "cuda" if torch.cuda.is_available() else "cpu"
-device = torch.device(deviceString)
-
-
-# Function to create train and test sets for features and labels from given indices
-def create_train_test_sets(data, train_indices, test_indices, feature_cols, label_col):
-    X_train = data.iloc[train_indices][feature_cols]
-    y_train = data.iloc[train_indices][label_col]
-    X_test = data.iloc[test_indices][feature_cols]
-    y_test = data.iloc[test_indices][label_col]
-    return X_train, y_train, X_test, y_test
-
-# 重新定义自定义分割策略，以获得整体的训练集和测试集
-def custom__kfold(data, n_splits=5):
-    kf = KFold(n_splits=n_splits, shuffle=True, random_state=42)
-    grouped_data = data.groupby('Reference ID')
-
-    # 初始化每个fold的训练集和测试集索引列表
-    fold_indices = [[] for _ in range(n_splits)]
-
-    # 对每个组分别应用KFold
-    for _, group in grouped_data:
-        if len(group) < n_splits:
-            # 如果组的样本数小于n_splits，将所有样本放入每个fold的训练集
-            for fold_idx in range(n_splits):
-                train_indices = group.index
-                fold_indices[fold_idx].append((train_indices, np.array([])))
-        else:
-            # 如果组的样本数足够，正常应用KFold
-            for fold_idx, (train_index, test_index) in enumerate(kf.split(group)):
-                original_train_index = group.iloc[train_index].index
-                original_test_index = group.iloc[test_index].index
-                fold_indices[fold_idx].append((original_train_index, original_test_index))
-
-    # 合并每个fold的索引
-    final_fold_indices = []
-    for fold in fold_indices:
-        train_indices = np.concatenate([train_idx for train_idx, _ in fold])
-        test_indices = np.concatenate([test_idx for _, test_idx in fold if len(test_idx) > 0])
-        final_fold_indices.append((train_indices, test_indices))
-
-    return final_fold_indices
-
-# Load the dataset
-file_path = '../data/train_set_8.csv'
+file_path = '../output/AIData_ALL_model_Transformer_110.csv'
 data = pd.read_csv(file_path)
 
-# Define the KFold cross-validator
-folds = custom__kfold(data)
+# Clean the data by removing the first row which contains units
+data = data.iloc[1:].astype(float)
 
+# Prepare the dataset
+features_group_1 = ['Tube Diameter', 'Heated Length', 'Pressure', 'Mass Flux', 'Outlet Quality']
+features_group_2 = ['Tube Diameter', 'Heated Length', 'Pressure', 'Mass Flux', 'Inlet Subcooling']
+target = 'CHF'
 
-# 随机森林模型的类
-class RandomForestModule(nn.Module):
-    def __init__(self, n_estimators=100, random_state=42,batch_size = 512):
-        super(RandomForestModule, self).__init__()
+X1_full = data[features_group_1]
+X2_full = data[features_group_2]
+y_full = data[target]
 
-        self.batch_size = batch_size
-        self.model = RandomForestRegressor(n_estimators=n_estimators, random_state=random_state)
+# Split the data into training and testing sets (80% train, 20% test)
+X1_train_full, X1_test_full, y_train_full, y_test_full = train_test_split(X1_full, y_full, test_size=0.2, random_state=42)
+X2_train_full, X2_test_full, _, _ = train_test_split(X2_full, y_full, test_size=0.2, random_state=42)
 
-    def fit(self, src, real):
-            # 将 src 转换为二维数组，形状为 [batch_size, num_features]
-            src_reshaped = src.view(src.size(1), -1).numpy()  # [512, 6]
-            real = real.numpy()  # 转换为 numpy 数组
-            self.model.fit(src_reshaped, real)
+# Function to calculate advanced error metrics
+def calculate_advanced_errors(y_true, y_pred):
+    rmspe = np.sqrt(np.mean(np.square((y_true - y_pred) / y_true)))
+    mape = np.mean(np.abs((y_true - y_pred) / y_true))
+    nrmse = np.sqrt(mean_squared_error(y_true, y_pred)) / y_true.mean()
+    q2 = 1 - r2_score(y_true, y_pred)
+    od = np.mean([rmspe, mape, nrmse, q2])
+    return rmspe, mape, nrmse, q2, od
 
-    def forward(self, src):
-        # 将 src 转换为二维数组，形状为 [batch_size, num_features]
-        src_reshaped = src.view(src.size(1), -1).numpy()  # [512, 6]
-        # 使用 sklearn 的随机森林模型进行预测
+# Initialize Random Forest with default configurations
+rf_model = RandomForestRegressor(random_state=42)
 
-        prediction = self.model.predict(src_reshaped)
-        return torch.tensor(prediction, dtype=torch.float)
- 
+# Train and predict with Group 1 features
+rf_model.fit(X1_train_full, y_train_full)
+y_pred_test_1_rf = rf_model.predict(X1_test_full)
+y_pred_full_1_rf = rf_model.predict(X1_full)
 
-def train_and_evaluate(model, train_loader, val_loader, criterion, epochs, device, callIndex, model_name):
-    best_val_loss = float('inf')
-    model.to(device)
-    patience = epochs
-    patience_counter = 0  # 初始化早停计数器
-    train_losses = []
-    val_losses = []
-    # scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.1, patience=150,verbose=True)
-    # scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=32, gamma=0.96)
-    epochs = 1
-    for epoch in range(epochs):
-        # Training phase
-        model.train()
-        train_loss = 0
-        for batch_x, batch_y in tqdm(train_loader, desc=f"Training Epoch {epoch + 1}/{epochs}", leave=False):
-            # for batch_x, batch_y in train_loader:
-            batch_x, batch_y = batch_x.to(device), batch_y.to(device)
-            batch_x = batch_x.unsqueeze(0)  # 适合任务的序列长度
-            model.fit(batch_x,batch_y)
+# Train and predict with Group 2 features
+rf_model.fit(X2_train_full, y_train_full)
+y_pred_test_2_rf = rf_model.predict(X2_test_full)
+y_pred_full_2_rf = rf_model.predict(X2_full)
 
-        for batch_x, batch_y in tqdm(val_loader, desc=f"Val Epoch {epoch + 1}/{epochs}", leave=False):
-            # for batch_x, batch_y in train_loader:
-            batch_x, batch_y = batch_x.to(device), batch_y.to(device)
-            batch_x = batch_x.unsqueeze(0)  # 适合任务的序列长度
-            model.fit(batch_x,batch_y)
+# Calculate advanced metrics for Group 1
+rmspe_test_1_rf, mape_test_1_rf, nrmse_test_1_rf, q2_test_1_rf, od_test_1_rf = calculate_advanced_errors(y_test_full, y_pred_test_1_rf)
+rmspe_full_1_rf, mape_full_1_rf, nrmse_full_1_rf, q2_full_1_rf, od_full_1_rf = calculate_advanced_errors(y_full, y_pred_full_1_rf)
 
-        joblib.dump(model, f'../model/{model_name}_best_model_{callIndex}.pkl')
-    return '', '', '', model
+# Calculate advanced metrics for Group 2
+rmspe_test_2_rf, mape_test_2_rf, nrmse_test_2_rf, q2_test_2_rf, od_test_2_rf = calculate_advanced_errors(y_test_full, y_pred_test_2_rf)
+rmspe_full_2_rf, mape_full_2_rf, nrmse_full_2_rf, q2_full_2_rf, od_full_2_rf = calculate_advanced_errors(y_full, y_pred_full_2_rf)
 
+# Store the results for Random Forest
+rf_results = {
+    'Group 1': {'RMSPE Test': rmspe_test_1_rf, 'MAPE Test': mape_test_1_rf, 'NRMSE Test': nrmse_test_1_rf, '1-Q² Test': q2_test_1_rf, 'OD Test': od_test_1_rf,
+                'RMSPE Full': rmspe_full_1_rf, 'MAPE Full': mape_full_1_rf, 'NRMSE Full': nrmse_full_1_rf, '1-Q² Full': q2_full_1_rf, 'OD Full': od_full_1_rf},
+    'Group 2': {'RMSPE Test': rmspe_test_2_rf, 'MAPE Test': mape_test_2_rf, 'NRMSE Test': nrmse_test_2_rf, '1-Q² Test': q2_test_2_rf, 'OD Test': od_test_2_rf,
+                'RMSPE Full': rmspe_full_2_rf, 'MAPE Full': mape_full_2_rf, 'NRMSE Full': nrmse_full_2_rf, '1-Q² Full': q2_full_2_rf, 'OD Full': od_full_2_rf}
+}
 
-def doTrain(feature_columns = ['Tube Diameter' ,'Heated Length', 'Pressure' ,'Mass Flux', 'Inlet Subcooling'] , model_name = 'randomforest',callIndex='500') :
-    
-    print(f'开始训练 callIndex : {callIndex} feature_columns: {feature_columns}')
-    # Load the dataset
-    file_path = '../data/train_set_8.csv'
+# Output all predicted values and ensure they are stored separately for test and full datasets
+predicted_values_test = {
+    'Group 1 Test Predictions': y_pred_test_1_rf,
+    'Group 2 Test Predictions': y_pred_test_2_rf
+}
 
-    # Model hyperparameters setup
-    # 超参数的搜索范围
-    batch_size = 512
-    output_size = 1
-    n_estimators = 100
-    random_state = 42
+predicted_values_full = {
+    'Group 1 Full Predictions': y_pred_full_1_rf,
+    'Group 2 Full Predictions': y_pred_full_2_rf
+}
 
-    set_seed(42)
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+# Print the results
+print("Random Forest Results:")
+print(rf_results)
 
-    data = pd.read_csv(file_path)
+print("\nTest Set Predicted Values:")
+for key, value in predicted_values_test.items():
+    print(f"{key}: {value}")
 
-    # Define the KFold cross-validator
-    folds = custom__kfold(data)
-    label_column = 'CHF'
-    input_size = len(feature_columns)
-    dropout = 0.01
-
-
-    X_train, y_train, X_val, y_val = create_train_test_sets(data, folds[1][0], folds[1][1], feature_columns,label_column)
-
-    # Convert DataFrame/Series to numpy array before converting to Tensor
-    X_train_tensor = torch.tensor(X_train.values, dtype=torch.float32) if isinstance(X_train,pd.DataFrame) else torch.tensor(X_train, dtype=torch.float32)
-    y_train_tensor = torch.tensor(y_train.values, dtype=torch.float32) if isinstance(y_train,pd.Series) else torch.tensor(y_train, dtype=torch.float32)
-    X_val_tensor = torch.tensor(X_val.values, dtype=torch.float32) if isinstance(X_val, pd.DataFrame) else torch.tensor(X_val, dtype=torch.float32)
-    y_val_tensor = torch.tensor(y_val.values, dtype=torch.float32) if isinstance(y_val, pd.Series) else torch.tensor(y_val, dtype=torch.float32)
-
-    # Define data loaders for PyTorch
-    train_dataset = torch.utils.data.TensorDataset(X_train_tensor, y_train_tensor)
-    val_dataset = torch.utils.data.TensorDataset(X_val_tensor, y_val_tensor)
-
-    
-    train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
-    val_loader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
-
-    criterion = torch.nn.SmoothL1Loss()
-    model = RandomForestModule(n_estimators=n_estimators, random_state=random_state, batch_size = batch_size)
-    # optimizer = torch.optim.Adam(model.parameters(), lr=1e-2, weight_decay=1e-3)
-
-    # Train and evaluate the model
-    train_losses, val_losses, best_val_loss, model = train_and_evaluate(model, train_loader, val_loader, criterion, epochs=epochsCount, device= device, callIndex=callIndex,model_name = model_name)
-
-    return train_losses, val_losses, best_val_loss, model
-
-
-if __name__ == "__main__":
-    print("测试 rwky")
-
-    epochsCount = 10
-
-    # 300 6-1
-    # Tube Diameter, Heated Length, Enthalpy value of water, Enthalpy value of air , Mass Flux, Inlet Subcooling
-    doTrain(feature_columns = ['Tube Diameter', 'Heated Length', 'Enthalpy value of water','Enthalpy value of air' , 'Mass Flux', 'Inlet Subcooling'], callIndex = '500')
-
-
-
+print("\nFull Dataset Predicted Values:")
+for key, value in predicted_values_full.items():
+    print(f"{key}: {value}")

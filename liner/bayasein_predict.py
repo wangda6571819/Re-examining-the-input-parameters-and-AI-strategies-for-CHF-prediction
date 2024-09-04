@@ -65,159 +65,79 @@ rmspe_full_2_bayesian, mape_full_2_bayesian, nrmse_full_2_bayesian, q2_full_2_ba
 
 
 
-slice_sheet_name = ['slice01','slice02','slice03','slice04','slice05','slice06','slice07','slice08','slice09','slice10','slice11','slice12']
-
+# 创建一个空的DataFrame
+slice_sheet_name = ['slice01','slice02','slice03','slice04','slice05']
 # 创建一个空的DataFrame
 df_slice01 = pd.DataFrame(columns=['Tube Diameter', 'Heated Length', 'Pressure', 'Mass Flux', 'Outlet Quality', 'Inlet Subcooling', 'Inlet Temperature'])
 
 # 设定 单值变动其他值不变
 slice1D = np.arange(0.002, 0.017, 0.001)
 df_slice01['Tube Diameter'] = slice1D
-df_slice01['Heated Length'] = 6
-df_slice01['Pressure'] = 14710
-df_slice01['Mass Flux'] = 1000
-df_slice01['Outlet Quality'] = [0.53] * len(slice1D)
-df_slice01['Inlet Subcooling'] = 435
-df_slice01['Inlet Temperature'] = 258
-
+df_slice01['Heated Length'] = 2
+df_slice01['Pressure'] = 10000
+df_slice01['Mass Flux'] = 1550
+df_slice01['Outlet Quality'] = [0.334] * len(slice1D)
+df_slice01['Inlet Subcooling'] = 451
+df_slice01['Inlet Temperature'] = 221
 
 # 创建一个空的DataFrame
 df_slice02 = pd.DataFrame(columns=['Tube Diameter', 'Heated Length', 'Pressure', 'Mass Flux', 'Outlet Quality', 'Inlet Subcooling', 'Inlet Temperature'])
-df_slice02['Tube Diameter'] = slice1D
-df_slice02['Heated Length'] = 6
-df_slice02['Pressure'] = 9800
-df_slice02['Mass Flux'] = 1000
-df_slice02['Outlet Quality'] = [0.53] * len(slice1D)
-df_slice02['Inlet Subcooling'] = 650
-df_slice02['Inlet Temperature'] = 173
+# 设定 单值变动其他值不变
+slice2D = np.arange(0, 21, 1)
+df_slice02['Tube Diameter'] = [0.008] * len(slice2D)
+df_slice02['Heated Length'] = slice2D
+df_slice02['Pressure'] = 9841
+df_slice02['Mass Flux'] = 1660
+df_slice02['Outlet Quality'] = [0.327] * len(slice2D)
+df_slice02['Inlet Subcooling'] = 448
+df_slice02['Inlet Temperature'] = 221
 
 
 # 创建一个空的DataFrame
 df_slice03 = pd.DataFrame(columns=['Tube Diameter', 'Heated Length', 'Pressure', 'Mass Flux', 'Outlet Quality', 'Inlet Subcooling', 'Inlet Temperature'])
-
 # 设定 单值变动其他值不变
-slice3d = np.arange(0, 21, 1)
+slice3d = np.arange(0, 22000, 1500)
 df_slice03['Tube Diameter'] = [0.008] * len(slice3d)
-df_slice03['Heated Length'] = slice3d
-df_slice03['Pressure'] = 9800
-df_slice03['Mass Flux'] = 1005
-df_slice03['Outlet Quality'] = [0.58] * len(slice3d)
-df_slice03['Inlet Subcooling'] = 500
-df_slice03['Inlet Temperature'] = 207
+df_slice03['Heated Length'] = [1.9] * len(slice3d)
+df_slice03['Pressure'] = slice3d
+df_slice03['Mass Flux'] = 1544
+df_slice03['Outlet Quality'] = [0.32] * len(slice3d)
+df_slice03['Inlet Subcooling'] = 438
+df_slice03['Inlet Temperature'] = 234
 
 
 # 创建一个空的DataFrame
 df_slice04 = pd.DataFrame(columns=['Tube Diameter', 'Heated Length', 'Pressure', 'Mass Flux', 'Outlet Quality', 'Inlet Subcooling', 'Inlet Temperature'])
-df_slice04['Tube Diameter'] = [0.0081] * len(slice3d)
-df_slice04['Heated Length'] = slice3d
-df_slice04['Pressure'] = 2000
-df_slice04['Mass Flux'] = 751
-df_slice04['Outlet Quality'] = [0.76] * len(slice3d)
-df_slice04['Inlet Subcooling'] = 219
-df_slice04['Inlet Temperature'] = 162
+# 设定 单值变动其他值不变
+slice4d = np.arange(0, 8400, 400)
+df_slice04['Tube Diameter'] = [0.008] * len(slice4d)
+df_slice04['Heated Length'] = [1.76] * len(slice4d)
+df_slice04['Pressure'] = 9839
+df_slice04['Mass Flux'] = slice4d
+df_slice04['Outlet Quality'] = [0.224] * len(slice4d)
+df_slice04['Inlet Subcooling'] = 436
+df_slice04['Inlet Temperature'] = 223
 
 
 # 创建一个空的DataFrame
 df_slice05 = pd.DataFrame(columns=['Tube Diameter', 'Heated Length', 'Pressure', 'Mass Flux', 'Outlet Quality', 'Inlet Subcooling', 'Inlet Temperature'])
 # 设定 单值变动其他值不变
-slice5d = np.arange(0, 22000, 1500)
+slice5d = np.arange(0, 1500, 100)
 df_slice05['Tube Diameter'] = [0.008] * len(slice5d)
-df_slice05['Heated Length'] = 1
-df_slice05['Pressure'] = slice5d
-df_slice05['Mass Flux'] = 2000
-df_slice05['Outlet Quality'] = [0.14] * len(slice5d)
-df_slice05['Inlet Subcooling'] = 485
-df_slice05['Inlet Temperature'] = 210
-
-df_slice06 = pd.DataFrame(columns=['Tube Diameter', 'Heated Length', 'Pressure', 'Mass Flux', 'Outlet Quality', 'Inlet Subcooling', 'Inlet Temperature'])
-df_slice06['Tube Diameter'] = [0.0133] * len(slice5d)
-df_slice06['Heated Length'] = [3.658] * len(slice5d)
-df_slice06['Pressure'] = slice5d
-df_slice06['Mass Flux'] = 2038
-df_slice06['Outlet Quality'] = [0.377] * len(slice5d)
-df_slice06['Inlet Subcooling'] = 164
-df_slice06['Inlet Temperature'] = 254
-
-
-# 创建一个空的DataFrame
-df_slice07 = pd.DataFrame(columns=['Tube Diameter', 'Heated Length', 'Pressure', 'Mass Flux', 'Outlet Quality', 'Inlet Subcooling', 'Inlet Temperature'])
-# 设定 单值变动其他值不变
-slice7d = np.arange(0, 8400, 400)
-df_slice07['Tube Diameter'] = [0.008] * len(slice7d)
-df_slice07['Heated Length'] = [1.57] * len(slice7d)
-df_slice07['Pressure'] = 12750
-df_slice07['Mass Flux'] = slice7d
-df_slice07['Outlet Quality'] = [0.142] * len(slice7d)
-df_slice07['Inlet Subcooling'] = 428
-df_slice07['Inlet Temperature'] = 247
-
-df_slice08 = pd.DataFrame(columns=['Tube Diameter', 'Heated Length', 'Pressure', 'Mass Flux', 'Outlet Quality', 'Inlet Subcooling', 'Inlet Temperature'])
-df_slice08['Tube Diameter'] = [0.01] * len(slice7d)
-df_slice08['Heated Length'] = 4.966
-df_slice08['Pressure'] = 16000
-df_slice08['Mass Flux'] = slice7d
-df_slice08['Outlet Quality'] = [0.344] * len(slice7d)
-df_slice08['Inlet Subcooling'] = 154
-df_slice08['Inlet Temperature'] = 327
-
-# # 创建一个空的DataFrame
-df_slice09 = pd.DataFrame(columns=['Tube Diameter', 'Heated Length', 'Pressure', 'Mass Flux', 'Outlet Quality', 'Inlet Subcooling', 'Inlet Temperature'])
-# 设定 单值变动其他值不变
-slice9d = np.arange(-0.5, 1.1, 0.1)
-df_slice09['Tube Diameter'] = [0.0081] * len(slice9d)
-df_slice09['Heated Length'] = [1.94] * len(slice9d)
-df_slice09['Pressure'] = 9831
-df_slice09['Mass Flux'] = 1519
-df_slice09['Outlet Quality'] = slice9d
-df_slice09['Inlet Subcooling'] = 444
-df_slice09['Inlet Temperature'] = 218
-
-df_slice10 = pd.DataFrame(columns=['Tube Diameter', 'Heated Length', 'Pressure', 'Mass Flux', 'Outlet Quality', 'Inlet Subcooling', 'Inlet Temperature'])
-df_slice10['Tube Diameter'] = [0.008] * len(slice9d)
-df_slice10['Heated Length'] = 1
-df_slice10['Pressure'] = 17650
-df_slice10['Mass Flux'] = 2003
-df_slice10['Outlet Quality'] = slice9d
-df_slice10['Inlet Subcooling'] = 824
-df_slice10['Inlet Temperature'] = 202
-
-
-# 创建一个空的DataFrame
-df_slice11 = pd.DataFrame(columns=['Tube Diameter', 'Heated Length', 'Pressure', 'Mass Flux', 'Outlet Quality', 'Inlet Subcooling', 'Inlet Temperature'])
-# 设定 单值变动其他值不变
-# slice9d = np.arange(-0.5, 1.1, 0.1)
-slice11d = np.arange(0, 1600, 100)
-df_slice11['Tube Diameter'] = [0.0081] * len(slice11d)
-df_slice11['Heated Length'] = [1.94] * len(slice11d)
-df_slice11['Pressure'] = 9831
-df_slice11['Mass Flux'] = 1519
-df_slice11['Outlet Quality'] = [0.371] * len(slice11d)
-df_slice11['Inlet Subcooling'] = slice11d
-df_slice11['Inlet Temperature'] = 218
-
-df_slice12 = pd.DataFrame(columns=['Tube Diameter', 'Heated Length', 'Pressure', 'Mass Flux', 'Outlet Quality', 'Inlet Subcooling', 'Inlet Temperature'])
-df_slice12['Tube Diameter'] = [0.008] * len(slice11d)
-df_slice12['Heated Length'] = 1
-df_slice12['Pressure'] = 17650
-df_slice12['Mass Flux'] = [2000] * len(slice11d)
-df_slice12['Outlet Quality'] = [-0.14] * len(slice11d)
-df_slice12['Inlet Subcooling'] = slice11d
-df_slice12['Inlet Temperature'] = 202
+df_slice05['Heated Length'] = [1.92] * len(slice5d)
+df_slice05['Pressure'] = 9811
+df_slice05['Mass Flux'] = 1574
+df_slice05['Outlet Quality'] = [0.347] * len(slice5d)
+df_slice05['Inlet Subcooling'] = slice5d
+df_slice05['Inlet Temperature'] = 207
 
 
 depend_items = {
 'slice01' : {'key' : 'Tube Diameter' , 'df' : df_slice01},
-'slice02' : {'key' : 'Tube Diameter' , 'df' : df_slice02},
-'slice03' : {'key' : 'Heated Length' , 'df' : df_slice03},
-'slice04' : {'key' : 'Heated Length' , 'df' : df_slice04},
-'slice05': { 'key' : 'Pressure' , 'df' : df_slice05},
-'slice06': { 'key' : 'Pressure', 'df' : df_slice06},
-'slice07': { 'key' : 'Mass Flux', 'df' : df_slice07},
-'slice08': { 'key' : 'Mass Flux', 'df' : df_slice08},
-'slice09': { 'key' : 'Outlet Quality', 'df' : df_slice09},
-'slice10': { 'key' : 'Outlet Quality', 'df' : df_slice10},
-'slice11': { 'key' : 'Inlet Subcooling', 'df' : df_slice11},
-'slice12': { 'key' : 'Inlet Subcooling', 'df' : df_slice12},
+'slice02' : {'key' : 'Heated Length' , 'df' : df_slice02},
+'slice03': { 'key' : 'Pressure' , 'df' : df_slice03},
+'slice04': { 'key' : 'Mass Flux', 'df' : df_slice04},
+'slice05': { 'key' : 'Inlet Subcooling', 'df' : df_slice05},
 }
 
 
@@ -242,6 +162,5 @@ for slice_name in slice_sheet_name :
     fdf[f'601 AI Data'] = predictData
 
     fdf.to_csv(new_path_data, index=False)
-
 
 

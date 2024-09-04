@@ -236,7 +236,7 @@ def doTrain(feature_columns = ['Tube Diameter' ,'Heated Length', 'Enthalpy value
     train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
     val_loader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
 
-    criterion = torch.nn.KLDivLoss(reduction='mean')
+    criterion = torch.nn.SmoothL1Loss(reduction='mean')
     model = TransformerModel(input_features=input_size, d_model=d_model, nhead=nhead, num_encoder_layers=num_encoder_layers,dim_feedforward=dim_feedforward, dropout=dropout)
     optimizer = torch.optim.Adam(model.parameters(), lr=0.001, weight_decay=1e-3)
 
@@ -254,9 +254,9 @@ def getModel(feature_columns) :
     batch_size = 512
     d_model = 64
     nhead = 32
-    num_encoder_layers = 6
+    num_encoder_layers = 10
     dim_feedforward = 4096
-    dropout = 0.01
+    dropout = 0.008
     input_size = len(feature_columns)
 
     model = TransformerModel(input_features=input_size, d_model=d_model, nhead=nhead, num_encoder_layers=num_encoder_layers,dim_feedforward=dim_feedforward, dropout=dropout)

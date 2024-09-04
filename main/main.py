@@ -26,39 +26,44 @@ feature_train_data_file = './data_feature.csv'
 # 测试列表
 trainList = [
  # 110 6-1
-{ 'epochsCount' : epochs , 'feature_columns' : ['Tube Diameter', 'Heated Length', 'Enthalpy value of water','Enthalpy value of air' , 'Mass Flux', 'Inlet Subcooling'], 'callIndex' : '110', "trainMethod": TransformerTrain, 'model_name': 'Transformer'},
+# { 'epochsCount' : epochs , 'feature_columns' : ['Tube Diameter', 'Heated Length', 'Enthalpy value of water','Enthalpy value of air' , 'Mass Flux', 'Inlet Subcooling'], 'callIndex' : '110', "trainMethod": TransformerTrain, 'model_name': 'Transformer'},
 # 111 5-1
-{ 'epochsCount' : epochs , 'feature_columns' : ['Tube Diameter', 'Heated Length', 'Pressure' , 'Mass Flux', 'Inlet Subcooling'], "callIndex" : '111', "trainMethod": TransformerTrain ,'model_name': 'Transformer'},
-# 112 4-1
-{ 'epochsCount' : epochs , 'feature_columns' : ['Pressure', 'Mass Flux', 'Inlet Subcooling','H/D'], "callIndex" : '112', "trainMethod": TransformerTrain ,'model_name': 'Transformer'},
-# 113 5w -1
-{ 'epochsCount' : epochs , 'feature_columns' : ['Tube Diameter', 'Heated Length' ,'Enthalpy value of water', 'Mass Flux', 'Inlet Subcooling'], "callIndex" : '113', "trainMethod": TransformerTrain ,'model_name': 'Transformer'},
-# 114 5a - 1
-{ 'epochsCount' : epochs , 'feature_columns' : ['Tube Diameter', 'Heated Length' ,'Enthalpy value of air', 'Mass Flux', 'Inlet Subcooling'], "callIndex" : '114', "trainMethod": TransformerTrain , 'model_name': 'Transformer'},
-# 115 8-1
-{ 'epochsCount' : epochs , 'feature_columns' : ['Tube Diameter', 'Heated Length', 'Enthalpy value of water', 'Enthalpy value of air' ,'Enthalpy Temperature', 'Mass Flux', 'Inlet Subcooling' ,'Inlet Temperature'], "callIndex" : '115', "trainMethod": TransformerTrain , 'model_name': 'Transformer'},
-# 116 9-1
-{ 'epochsCount' : epochs , 'feature_columns' : ['Tube Diameter', 'Heated Length', 'Enthalpy value of water', 'Enthalpy value of air' , 'Pressure', 'Mass Flux', 'Inlet Subcooling' ,'Inlet Temperature'], "callIndex" : '116', "trainMethod": TransformerTrain, 'model_name': 'Transformer'},
-# 117 6+a
-{ 'epochsCount' : epochs , 'feature_columns' : ['Tube Diameter', 'Heated Length', 'Enthalpy value of water', 'Enthalpy value of air' , 'Enthalpy Temperature' , 'Mass Flux', 'Inlet Subcooling' ,'Inlet Temperature'], "callIndex" : '117', 'trainMethod': TransformerTrain , 'model_name': 'Transformer'},
-# 118 6+b
-{ 'epochsCount' : epochs , 'feature_columns' : ['Tube Diameter', 'Heated Length', 'Enthalpy value of water', 'Enthalpy value of air' ,'Enthalpy Temperature' , 'Mass Flux', 'Inlet Subcooling'], "callIndex" : '118', 'trainMethod': TransformerTrain , 'model_name': 'Transformer'},
+# { 'epochsCount' : epochs , 'feature_columns' : ['Tube Diameter', 'Heated Length', 'Pressure' , 'Mass Flux', 'Inlet Subcooling'], "callIndex" : '111', "trainMethod": TransformerTrain ,'model_name': 'Transformer'},
+# # 112 4-1
+# { 'epochsCount' : epochs , 'feature_columns' : ['Pressure', 'Mass Flux', 'Inlet Subcooling','H/D'], "callIndex" : '112', "trainMethod": TransformerTrain ,'model_name': 'Transformer'},
+# # 113 5w -1
+# { 'epochsCount' : epochs , 'feature_columns' : ['Tube Diameter', 'Heated Length' ,'Enthalpy value of water', 'Mass Flux', 'Inlet Subcooling'], "callIndex" : '113', "trainMethod": TransformerTrain ,'model_name': 'Transformer'},
+# # 114 5a - 1
+# { 'epochsCount' : epochs , 'feature_columns' : ['Tube Diameter', 'Heated Length' ,'Enthalpy value of air', 'Mass Flux', 'Inlet Subcooling'], "callIndex" : '114', "trainMethod": TransformerTrain , 'model_name': 'Transformer'},
+# # 115 8-1
+# { 'epochsCount' : epochs , 'feature_columns' : ['Tube Diameter', 'Heated Length', 'Enthalpy value of water', 'Enthalpy value of air' ,'Enthalpy Temperature', 'Mass Flux', 'Inlet Subcooling' ,'Inlet Temperature'], "callIndex" : '115', "trainMethod": TransformerTrain , 'model_name': 'Transformer'},
+# # 116 9-1
+# { 'epochsCount' : epochs , 'feature_columns' : ['Tube Diameter', 'Heated Length', 'Enthalpy value of water', 'Enthalpy value of air' , 'Pressure', 'Mass Flux', 'Inlet Subcooling' ,'Inlet Temperature'], "callIndex" : '116', "trainMethod": TransformerTrain, 'model_name': 'Transformer'},
+# # 117 6+a
+# { 'epochsCount' : epochs , 'feature_columns' : ['Tube Diameter', 'Heated Length', 'Enthalpy value of water', 'Enthalpy value of air' , 'Enthalpy Temperature' , 'Mass Flux', 'Inlet Subcooling' ,'Inlet Temperature'], "callIndex" : '117', 'trainMethod': TransformerTrain , 'model_name': 'Transformer'},
+# # 118 6+b
+# { 'epochsCount' : epochs , 'feature_columns' : ['Tube Diameter', 'Heated Length', 'Enthalpy value of water', 'Enthalpy value of air' ,'Enthalpy Temperature' , 'Mass Flux', 'Inlet Subcooling'], "callIndex" : '118', 'trainMethod': TransformerTrain , 'model_name': 'Transformer'},
 
 # 119 LDPXG
-{ 'epochsCount' : epochs , 'feature_columns' : ['Tube Diameter', 'Heated Length', 'Pressure', 'Mass Flux', 'Outlet Quality'], 'callIndex' : '119', 'trainMethod': TransformerTrain, 'model_name': 'Transformer'},
-# 120 DPXG
-{ 'epochsCount' : epochs , 'feature_columns' : ['Tube Diameter', 'Pressure', 'Mass Flux', 'Outlet Quality'], 'callIndex' : '120', 'trainMethod': TransformerTrain, 'model_name': 'Transformer'},
+# { 'epochsCount' : epochs , 'feature_columns' : ['Tube Diameter', 'Heated Length', 'Pressure', 'Mass Flux', 'Outlet Quality'], 'callIndex' : '119', 'trainMethod': TransformerTrain, 'model_name': 'Transformer'},
+# # 120 DPXG
+# { 'epochsCount' : epochs , 'feature_columns' : ['Tube Diameter', 'Pressure', 'Mass Flux', 'Outlet Quality'], 'callIndex' : '120', 'trainMethod': TransformerTrain, 'model_name': 'Transformer'},
 
+# 121 
+# { 'epochsCount' : epochs , 'feature_columns' : ['Tube Diameter', 'Heated Length', 'Pressure' , 'Mass Flux', 'Inlet Subcooling'], 'callIndex' : '121', "trainMethod": TransformerTrain, 'model_name': 'Transformer'},
 
 # 200 6-1 mamba 
-{ 'epochsCount' : epochs , 'feature_columns' : ['Tube Diameter', 'Heated Length', 'Enthalpy value of water','Enthalpy value of air' , 'Mass Flux', 'Inlet Subcooling'], 'callIndex' : '200', 'trainMethod': MambaTrain, 'model_name': 'Mamba'},
-# 201 LDPXG
-{ 'epochsCount' : epochs , 'feature_columns' : ['Tube Diameter', 'Heated Length', 'Pressure' , 'Mass Flux', 'Inlet Subcooling'], 'callIndex' : '201', 'trainMethod': MambaTrain, 'model_name': 'Mamba'},
+# { 'epochsCount' : epochs , 'feature_columns' : ['Tube Diameter', 'Heated Length', 'Enthalpy value of water','Enthalpy value of air' , 'Mass Flux', 'Inlet Subcooling'], 'callIndex' : '200', 'trainMethod': MambaTrain, 'model_name': 'Mamba'},
+# 201  LDPXG
+# { 'epochsCount' : epochs , 'feature_columns' : ['Tube Diameter', 'Heated Length', 'Pressure', 'Mass Flux', 'Outlet Quality'], 'callIndex' : '201', 'trainMethod': MambaTrain, 'model_name': 'Mamba'},
+# 202 LDPXG
+# { 'epochsCount' : epochs , 'feature_columns' : ['Tube Diameter', 'Heated Length', 'Pressure' , 'Mass Flux', 'Inlet Subcooling'], 'callIndex' : '202', 'trainMethod': MambaTrain, 'model_name': 'Mamba'},
 
 
 # 300 6-1 tcn 
-{ 'epochsCount' : epochs , 'feature_columns' : ['Tube Diameter', 'Heated Length', 'Enthalpy value of water','Enthalpy value of air' , 'Mass Flux', 'Inlet Subcooling'], 'callIndex' : '300', 'trainMethod': TCNTrain, 'model_name': 'TCN'},
-{ 'epochsCount' : epochs , 'feature_columns' : ['Tube Diameter', 'Heated Length', 'Pressure' , 'Mass Flux', 'Inlet Subcooling'], 'callIndex' : '301', 'trainMethod': TCNTrain, 'model_name': 'TCN'},
+# { 'epochsCount' : epochs , 'feature_columns' : ['Tube Diameter', 'Heated Length', 'Enthalpy value of water','Enthalpy value of air' , 'Mass Flux', 'Inlet Subcooling'], 'callIndex' : '300', 'trainMethod': TCNTrain, 'model_name': 'TCN'},
+# 302 LDPXG
+{ 'epochsCount' : epochs , 'feature_columns' : ['Tube Diameter', 'Heated Length', 'Pressure' , 'Mass Flux', 'Inlet Subcooling'], 'callIndex' : '302', 'trainMethod': TCNTrain, 'model_name': 'TCN'},
 ]
 
 header = ['callIndex','feature_columns','best_val_loss','train_losses','val_losses']
